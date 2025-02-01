@@ -2,6 +2,7 @@ import { CanvasContext } from './components/canvasContext';
 import { Player } from './components/player';
 import { Projectile } from './components/projectile';
 import { Enemy } from './components/enemy';
+import { Particle } from './components/particle';
 import gsap from 'gsap';
 
 const canvasContext = CanvasContext.getInstance();
@@ -13,6 +14,7 @@ player.spawn();
 
 const projectiles: Projectile[] = [];
 const enemies: Enemy[] = [];
+const particles: Particle[] = [];
 
 // animate everything
 let isAlive: number;
@@ -22,6 +24,15 @@ function animate(): void {
     canvasContext.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
     canvasContext.ctx.fillRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
     player.spawn();
+
+    //particles
+    particles.forEach((particle, ptId) => {
+        if (particle.alpha <= 0) {
+            particles.splice(ptId, 1)
+        } else {
+            particle.update();
+        }
+    });
 
     projectiles.forEach((projectile, pid) => {
         projectile.update();
@@ -52,10 +63,27 @@ function animate(): void {
             //projectile collider
             if (dist - enemy.radius - projectile.radius < 1) {
 
+                for (let i = 0; i < enemy.radius * 2; i++) {
+
+                    const particleSize = Math.random() * 3;
+
+                    particles.push(
+                        new Particle(
+                            projectile.x,
+                            projectile.y,
+                            particleSize,
+                            enemy.color,
+                            {
+                                x: (Math.random() - 0.5) * (Math.random() * 4),
+                                y: (Math.random() - 0.5) * (Math.random() * 4)
+                            }
+                    ));
+                }
+
                 //deal dmg
-                if (enemy.radius - 7 > 7) {
+                if (enemy.radius - 5 > 5) {
                     gsap.to(enemy, {
-                        radius: enemy.radius - 10
+                        radius: enemy.radius - 5
                     });
 
                     projectiles.splice(pid, 1);
@@ -79,7 +107,7 @@ spawnEnemies();
 function spawnEnemies() {
     setInterval(() => {
         //hp, min-hp
-        const radius = Math.random() * (35 - 7) + 7;
+        const radius = Math.random() * (20 - 5) + 5;
 
         let x: number = 0;
         let y: number = 0;
@@ -105,7 +133,7 @@ function spawnEnemies() {
             y: Math.sin(angle)
         }
         enemies.push(new Enemy(x, y, radius, color, velocity));
-    }, 1000);
+    }, 1500);
 }
 
 //mouse click event
