@@ -1,27 +1,22 @@
 import { CanvasContext } from "./canvasContext";
 
-export class Player {
+export class Projectile {
     private ctx: CanvasRenderingContext2D;
-    public x: number;
-    public y: number;
 
     constructor(
+        public x: number,
+        public y: number,
         public radius: number,
         public color: string,
+        public vel: Velocity
     ) {
         this.ctx = CanvasContext.getInstance().ctx;
 
-        this.y = this.ctx.canvas.height / 2;
-        this.x = this.ctx.canvas.width / 2;
-
-        //update player pos if window resizes.. zzzZ
-        window.addEventListener('resize', () => {
-            this.y = this.ctx.canvas.height / 2;
-            this.x = this.ctx.canvas.width / 2;
-        });
-
+        this.x = x;
+        this.y = y;
         this.radius = radius;
         this.color = color;
+        this.vel = vel;
     }
 
     spawn(): void {
@@ -30,4 +25,15 @@ export class Player {
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
     }
+
+    update(): void {
+        this.spawn();
+        this.x += this.vel.x;
+        this.y += this.vel.y;
+    }
+}
+
+interface Velocity {
+    x: number;
+    y: number;
 }
