@@ -2,6 +2,7 @@ import { CanvasContext } from './components/canvasContext';
 import { Player } from './components/player';
 import { Projectile } from './components/projectile';
 import { Enemy } from './components/enemy';
+import gsap from 'gsap';
 
 const canvasContext = CanvasContext.getInstance();
 
@@ -48,12 +49,26 @@ function animate(): void {
                 projectile.y - enemy.y
             );
 
-            //colliders
+            //projectile collider
             if (dist - enemy.radius - projectile.radius < 1) {
-                setTimeout(() => {
-                    enemies.splice(id, 1)
+
+                //deal dmg
+                if (enemy.radius - 7 > 7) {
+                    gsap.to(enemy, {
+                        radius: enemy.radius - 10
+                    });
+
                     projectiles.splice(pid, 1);
-                }, 0);
+                    enemy.radius -= 7
+                    setTimeout(() => {
+                        projectiles.splice(pid, 1);
+                    }, 0);
+                } else {
+                    setTimeout(() => {
+                        enemies.splice(id, 1)
+                        projectiles.splice(pid, 1);
+                    }, 0);
+                }
             }
         });
     });
@@ -63,7 +78,8 @@ spawnEnemies();
 
 function spawnEnemies() {
     setInterval(() => {
-        const radius = Math.random() * (30 - 8) + 8;
+        //hp, min-hp
+        const radius = Math.random() * (35 - 7) + 7;
 
         let x: number = 0;
         let y: number = 0;
@@ -100,6 +116,7 @@ window.addEventListener('click', (event) => {
         event.clientX - canvasContext.canvas.width / 2
     )
 
+    //player fire rate
     const velocity = {
         x: Math.cos(angle) * 1.5,
         y: Math.sin(angle) * 1.5
