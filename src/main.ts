@@ -3,12 +3,13 @@ import { Player } from './components/player';
 import { Projectile } from './components/projectile';
 import { Enemy } from './components/enemy';
 import { Particle } from './components/particle';
+import { AudioState } from './components/audioHandler';
 import gsap from 'gsap';
 
 const canvasContext = CanvasContext.getInstance();
 
 //player instance
-const player = new Player(30, 'white')
+const player = new Player(20, 'white')
 
 player.spawn();
 
@@ -138,6 +139,8 @@ function spawnEnemies() {
 
 //mouse click event
 window.addEventListener('click', (event) => {
+
+    AudioState.Shoot.play();
 
     const angle = Math.atan2(
         event.clientY - canvasContext.canvas.height / 2,
