@@ -8,7 +8,9 @@ export class Enemy {
         public y: number,
         public radius: number,
         public color: string,
-        public vel: Velocity
+        public vel: Velocity,
+        public damageCd: number = 500,
+        public lastDamageTime: number = 0
     ) {
         this.ctx = CanvasContext.getInstance().ctx;
 
