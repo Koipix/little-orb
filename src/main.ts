@@ -4,21 +4,34 @@ import { Projectile } from './components/projectile';
 import { Enemy } from './components/enemy';
 import { Particle } from './components/particle';
 import { AudioState } from './components/audioHandler';
+import './style.css';
 import gsap from 'gsap';
 
 const canvasContext = CanvasContext.getInstance();
 
 //player instance
-const player = new Player(20, 'white')
-
-player.spawn();
-
-const projectiles: Projectile[] = [];
-const enemies: Enemy[] = [];
-const particles: Particle[] = [];
+let player: Player;
+let hpBar = document.querySelector('#hp-bar') as HTMLElement;
+let startMenu = document.querySelector('#start-menu') as HTMLElement;
+let startBtn = document.querySelector('#startBtn') as HTMLElement;
+let gameOverMenu = document.querySelector('#game-over-menu') as HTMLElement;
+let restartBtn = document.querySelector('#restartBtn') as HTMLElement;
+let isReady = false;
 
 // animate everything
 let isAlive: number;
+
+let projectiles: Projectile[] = [];
+let particles: Particle[] = [];
+let enemies: Enemy[] = [];
+
+function init() {
+    player = new Player(20, 'white')
+    hpBar.style.width = `${player.hp}%`;
+    projectiles = [];
+    particles = [];
+    enemies = [];
+}
 
 function animate(): void {
     isAlive = requestAnimationFrame(animate);
@@ -44,7 +57,6 @@ function animate(): void {
             projectile.y + projectile.radius > canvasContext.canvas.height
             ) {
             projectiles.splice(pid, 1);
-            console.log("projectile removed")
         }
     });
 
@@ -52,9 +64,44 @@ function animate(): void {
         enemy.update();
 
         const playerDist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
-        if (playerDist - enemy.radius - player.radius < 1) {
-            cancelAnimationFrame(isAlive);
-        }
+        const currentTime = Date.now(); //collider cd for enemies
+
+        //player hitpoints
+        if (playerDist - enemy.radius - player.radius < 1 &&
+            currentTime - enemy.lastDamageTime > enemy.damageCd
+        ) {
+            AudioState.PlayerHit.play();
+            enemies.splice(id, 1);
+            for (let i = 0; i < enemy.radius * 2; i++) {
+
+                const particleSize = Math.random() * 3;
+
+                particles.push(
+                    new Particle(
+                        enemy.x,
+                        enemy.y,
+                        particleSize,
+                        enemy.color,
+                        {
+                            x: (Math.random() - 0.5) * (Math.random() * 4),
+                            y: (Math.random() - 0.5) * (Math.random() * 4)
+                        }
+                ));
+            }
+
+            player.takeDamage(20);
+            hpBar.style.width = `${player.hp}%`
+            enemy.lastDamageTime = currentTime;
+            console.log(`Player has ` + player.hp + ` left`);
+
+            if (!player.isAlive) {
+                setTimeout(() => {
+                    isReady = false;
+                    cancelAnimationFrame(isAlive);
+                    gameOverMenu.style.display = 'flex'
+                }, 500);
+            };
+        };
 
         projectiles.forEach((projectile, pid) => {
             const dist = Math.hypot(projectile.x - enemy.x,
@@ -86,9 +133,6 @@ function animate(): void {
                     gsap.to(enemy, {
                         radius: enemy.radius - 5
                     });
-
-                    projectiles.splice(pid, 1);
-                    enemy.radius -= 7
                     setTimeout(() => {
                         projectiles.splice(pid, 1);
                     }, 0);
@@ -102,8 +146,6 @@ function animate(): void {
         });
     });
 }
-
-spawnEnemies();
 
 function spawnEnemies() {
     setInterval(() => {
@@ -140,7 +182,9 @@ function spawnEnemies() {
 //mouse click event
 window.addEventListener('click', (event) => {
 
-    AudioState.Shoot.play();
+    if (player.isAlive && isReady) {
+        AudioState.Shoot.play();
+    }
 
     const angle = Math.atan2(
         event.clientY - canvasContext.canvas.height / 2,
@@ -153,14 +197,29 @@ window.addEventListener('click', (event) => {
         y: Math.sin(angle) * 1.5
     }
 
-    //move projectile per frame
-    projectiles.push(new Projectile(
-        canvasContext.canvas.width / 2, canvasContext.canvas.height / 2,
-        7,
-        'white', velocity
-    ));
-
+    //shoot projectile
+    if (isReady) {
+        projectiles.push(new Projectile(
+            canvasContext.canvas.width / 2, canvasContext.canvas.height / 2,
+            7,
+            'white', velocity
+        ));
+    }
 });
 
-//start
-animate();
+startBtn.addEventListener('click', () => {
+    isReady = true;
+    startMenu.style.display = 'none';
+    hpBar.style.display = 'block';
+    init();
+    animate();
+    spawnEnemies();
+});
+
+restartBtn.addEventListener('click', () => {
+    isReady = true;
+    gameOverMenu.style.display = 'none';
+    init();
+    animate();
+    spawnEnemies();
+});

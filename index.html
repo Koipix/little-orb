@@ -1,9 +1,59 @@
-<!doctype html>
 <html lang="en">
   <head>
     <title>Rouge Orb</title>
   </head>
-  <body>
+  <body class="bg-black">
+    <div style="position: relative;">
+        <div style="position: absolute; width: 100%;">
+
+            <!--exp-->
+            <div style="background-color: white; height: 5px; width: 0%;"></div>
+
+            <!--hp-->
+            <div style="width: 30%;
+                margin-top: 30px;
+                margin-left: 40px;
+                background-color: darkslategrey;
+                border-radius: 8px;
+                overflow: hidden;
+                max-width: 350px;
+                min-width: 350px;">
+
+                <div id="hp-bar" class="hidden" style="
+                    background-color: greenyellow;
+                    height: 25px;
+                    width: 0;"></div>
+            </div>
+
+        </div>
+
+        <!--Menu UI-->
+
+        <!--start_game_menu-->
+        <div id="start-menu" class="fixed inset-0 flex items-center justify-center">
+            <div class="bg-white max-w-md w-full p-7 text-center rounded-lg">
+                <h1 class="text-4xl font-bold leading-15">Orb Evolution</h1>
+                <p class="text-greay-700 mb-5">Dev: Koi (Inspired by Chris)</p>
+                <div>
+                    <button id="startBtn" class="cursor-pointer bg-blue-500 text-white w-full py-3 rounded-full hover:bg-sky-700">Start Game</button>
+                </div>
+            </div>
+        </div>
+        <!--start_game_menu-->
+
+        <!--game_over_menu-->
+        <div id="game-over-menu" class="fixed inset-0 flex items-center justify-center hidden">
+            <div class="bg-white max-w-md w-full p-7 text-center rounded-lg">
+                <h1 class="text-4xl font-bold">Game Over!</h1>
+                <p class="text-greay-700 mb-5">Good run! Wanna try again?</p>
+                <div>
+                    <button id="restartBtn" class="cursor-pointer bg-blue-500 text-white w-full py-3 rounded-full hover:bg-sky-700">Restart Game</button>
+                </div>
+            </div>
+        </div>
+        <!--game_over_menu-->
+
+    </div>
     <canvas></canvas>
     <script type="module" src="/src/main.ts"></script>
   </body>
