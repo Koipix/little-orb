@@ -55,7 +55,10 @@ export class Player {
             console.log("Player died!")
         }
 
-        hp_bar.style.width = `${this.hp}%`
+        gsap.to(hp_bar, {
+            width: `${this.hp}%`,
+            ease: 'power1.out'
+        })
     }
 
     gainExp(exp: number, exp_bar: HTMLElement): void {
