@@ -18,5 +18,11 @@ export const AudioState = {
         html5: true,
         preload: true,
         volume: 0.5
+    }),
+    BG: new Howl({
+        src: '/assets/audio/bgm.mp3',
+        html5: true,
+        preload: true,
+        volume: 0.5
     })
 }

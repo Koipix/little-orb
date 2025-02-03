@@ -11,11 +11,12 @@ const canvasContext = CanvasContext.getInstance();
 
 //player instance
 let player: Player;
-let hpBar = document.querySelector('#hp-bar') as HTMLElement;
 let startMenu = document.querySelector('#start-menu') as HTMLElement;
 let startBtn = document.querySelector('#startBtn') as HTMLElement;
 let gameOverMenu = document.querySelector('#game-over-menu') as HTMLElement;
 let restartBtn = document.querySelector('#restartBtn') as HTMLElement;
+let hp_bar = document.querySelector('#hp-bar') as HTMLElement;
+let exp_bar = document.querySelector('#exp-bar') as HTMLElement;
 let isReady = false;
 
 // animate everything
@@ -27,7 +28,7 @@ let enemies: Enemy[] = [];
 
 function init() {
     player = new Player(20, 'white')
-    hpBar.style.width = `${player.hp}%`;
+    hp_bar.style.width = `${player.hp}%`;
     projectiles = [];
     particles = [];
     enemies = [];
@@ -35,7 +36,7 @@ function init() {
 
 function animate(): void {
     isAlive = requestAnimationFrame(animate);
-    canvasContext.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+    canvasContext.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     canvasContext.ctx.fillRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
     player.spawn();
 
@@ -89,13 +90,12 @@ function animate(): void {
                 ));
             }
 
-            player.takeDamage(20);
-            hpBar.style.width = `${player.hp}%`
+            player.takeDamage(20, hp_bar);
             enemy.lastDamageTime = currentTime;
-            console.log(`Player has ` + player.hp + ` left`);
 
             if (!player.isAlive) {
                 setTimeout(() => {
+                    AudioState.BG.stop();
                     isReady = false;
                     cancelAnimationFrame(isAlive);
                     gameOverMenu.style.display = 'flex'
@@ -138,6 +138,7 @@ function animate(): void {
                     }, 0);
                 } else {
                     setTimeout(() => {
+                        player.gainExp(20, exp_bar)
                         enemies.splice(id, 1)
                         projectiles.splice(pid, 1);
                     }, 0);
@@ -210,7 +211,8 @@ window.addEventListener('click', (event) => {
 startBtn.addEventListener('click', () => {
     isReady = true;
     startMenu.style.display = 'none';
-    hpBar.style.display = 'block';
+    hp_bar.style.display = 'block';
+    AudioState.BG.play();
     init();
     animate();
     spawnEnemies();
@@ -219,7 +221,7 @@ startBtn.addEventListener('click', () => {
 restartBtn.addEventListener('click', () => {
     isReady = true;
     gameOverMenu.style.display = 'none';
+    AudioState.BG.play();
     init();
     animate();
-    spawnEnemies();
 });
