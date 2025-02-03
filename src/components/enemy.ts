@@ -10,7 +10,7 @@ export class Enemy {
         public color: string,
         public vel: Velocity,
         public damageCd: number = 500,
-        public lastDamageTime: number = 0
+        public lastDamageTime: number = 0,
     ) {
         this.ctx = CanvasContext.getInstance().ctx;
 
