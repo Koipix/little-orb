@@ -8,7 +8,7 @@
 
 ### Prerequisite:
 
-You will need the following to utilize all of Arona's features when building your own instance:
+You will need the following to utilize all of the game's features when running your own build:
 * Vite, at least version 6.0+
 * Gsap, at least version 3.10+
 * Howler, at least 2.2+
