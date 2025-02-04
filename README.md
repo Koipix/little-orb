@@ -16,7 +16,7 @@ You will need the following to utilize all of Arona's features when building you
 
 **It's still in development, so newer packages might be used in the future. ^-^**
 
-##Quick Installation
+### Quick Installation:
 
 Clone the project and run the command below, this should work fine (hopefully)
 ```
