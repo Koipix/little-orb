@@ -1,8 +1,8 @@
 <img alt="orb-evo" src="https://i.imgur.com/FI47wV9.png"/>
 
-<center><b>A rouglike themed shooter made in Typscript</b></center>
+<center><b>A rouglike themed shooter made in Typscript (I know it's goofy)</b></center>
 
-[Play Here!](orb-evo.vercel.app)
+[Play Here!](https://orb-evo.vercel.app)
 
 ## Building the Game
 
@@ -16,7 +16,7 @@ You will need the following to utilize all of the game's features when running y
 
 **It's still in development, so newer packages might be used in the future. ^-^**
 
-### Quick Installation:
+## Quick Installation:
 
 Clone the project and run the command below, this should work fine (hopefully)
 ```
